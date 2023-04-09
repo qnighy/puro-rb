@@ -1,0 +1,31 @@
+module Puro
+  module WS
+    def self.open: (String) -> Connection
+                 | (String) { (Connection) -> void } -> void
+
+    class Connection
+      BUF_LEN: int
+
+      @socket: IO
+      @url: String
+
+      @handshake: WebSocket::Handshake::Client
+      @frame: WebSocket::Frame::Incoming::Client
+
+      def initialize: (socket: IO, url: String) -> void
+      def connect: -> void
+
+      def next: -> String
+
+      def push: (String, ?type: :text | :binary) -> untyped
+      def <<: (String) -> untyped
+
+      def close: -> void
+
+      private
+
+      def next_frame: -> void
+      def receive_one: -> void
+    end
+  end
+end
