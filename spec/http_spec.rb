@@ -2,12 +2,6 @@
 
 require "socket"
 
-module Puro
-  RE_STATUS_LINE = /\AHTTP\/\d\.\d ([1-5]\d{2}) /
-  RE_FIELD_NAME = /\A[!#$%&'*+\-.^_`|~0-9A-Za-z]+\z/
-  RE_FIELD_VALUE = /\A[^\x00-\x1F]+\z/
-end
-
 RSpec.describe "http" do
   def get
     sock = Socket.tcp("example.com", 80)
@@ -22,12 +16,7 @@ RSpec.describe "http" do
       line = Puro::Http::Syntax.strip_line(sock.readline)
       break if line.empty?
 
-      name, value = line.split(":", 2)
-      if name.nil? || value.nil? || !Puro::RE_FIELD_NAME.match?(name) || !Puro::RE_FIELD_VALUE.match?(name)
-        raise "Invalid header line"
-      end
-      value = value.strip
-      name = name.downcase
+      name, value = Puro::Http::Syntax.parse_h1_field(line)
       if name == "set-cookie"
         (headers[name] ||= []) << value
       elsif headers.key?(name)

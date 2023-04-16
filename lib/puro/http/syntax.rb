@@ -35,7 +35,6 @@ module Puro
         [m[1], m[2].to_i]
       end
 
-      # :nodoc:
       # See {https://datatracker.ietf.org/doc/html/rfc9112#name-status-line RFC9112§4}
       # `HTTP` "HTTP-version is case-sensitive." (§2.3)
       # `(\d.\d)` one digit is sufficient according to the grammar
@@ -47,13 +46,65 @@ module Puro
       #   the inversion of which is %x00-08 / %x0A-1F / %x7F
       # Also, we don't capture the reason phrase because:
       #   "A client SHOULD ignore the reason-phrase content because it is not a reliable channel for information"
+      #
+      # :nodoc:
       RE_H1_STATUS = %r{\AHTTP/(\d\.\d) ([1-5]\d{2}) [^\x00-\x08\x0A-\x1F\x7F]*\z}.freeze
 
-      # :nodoc:
-      RE_FIELD_NAME = /\A[!#$%&'*+\-.^_`|~0-9A-Za-z]+\z/.freeze
+      # Parses HTTP/1.1 field line
+      #
+      # Reference:
+      #
+      # {https://datatracker.ietf.org/doc/html/rfc9112#name-field-syntax RFC9112§5}
+      def self.parse_h1_field(line)
+        name, value = line.split(":", 2)
+        # value is nil -> it is empty (len=0) or it has no colon (len=1)
+        if value.nil? || !RE_H1_FIELD_NAME.match?(name) || !RE_H1_FIELD_VALUE.match?(value)
+          raise "Invalid header line"
+        end
 
+        # From §5: "Each field line consists of a case-insensitive field name followed by ..."
+        name = name.downcase
+        # From §5.1: "A field line value might be preceded and/or followed by optional whitespace (OWS)"
+        # String#strip removes [\0\t\n\v\f\r ] but only [\t ] may appear here
+        value = value.strip
+        [name, value]
+      end
+
+      # {https://datatracker.ietf.org/doc/html/rfc9110#name-field-names RFC9110§5.1}
+      #
+      # > field-name     = token"
+      #
+      # {https://datatracker.ietf.org/doc/html/rfc9110#section-5.6.2 RFC9110§5.6.1}
+      #
+      # > token          = 1*tchar
+      # > tchar          = "!" / "#" / "$" / "%" / "&" / "'" / "*"
+      # >                / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
+      # >                / DIGIT / ALPHA
+      # >                ; any VCHAR, except delimiters
+      #
       # :nodoc:
-      RE_FIELD_VALUE = /\A[^\x00-\x20\x7F]+\z/.freeze
+      RE_H1_FIELD_NAME = /\A[!#$%&'*+\-.^_`|~0-9A-Za-z]+\z/.freeze
+
+      # {https://datatracker.ietf.org/doc/html/rfc9110#name-field-values RFC9110§5.5}
+      #
+      # > field-value    = *field-content
+      # > field-content  = field-vchar
+      # >                  [ 1*( SP / HTAB / field-vchar ) field-vchar ]
+      # > field-vchar    = VCHAR / obs-text
+      # > obs-text       = %x80-FF
+      #
+      # But I suppose the two repetition operators are mutually redundant, no?
+      # Like "text/html" being able to be interpreted as ["text/html"] or ["text", "/html"] or whatever.
+      # Let's assume field-value = [field-content] and field-content = field-vchar [*(SP/HTAB/field-vchar) field-vchar].
+      # (these are the same in terms of the language it generates)
+      #
+      # Then this essentially means *( SP / HTAB / field-vchar ) without leading or trailing ( SP / HTAB ).
+      # .
+      # In HTTP/1.1, the field is surrounded by arbitrary number of ( SP / HTAB ) so let's parse the whole part
+      # and strip the leading and trailing whitespaces later.
+      #
+      # :nodoc:
+      RE_H1_FIELD_VALUE = /\A[^\x00-\x08\x0A-\x1F\x7F]*\z/.freeze
     end
   end
 end

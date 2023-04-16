@@ -6,8 +6,11 @@ module Puro
       def self.parse_h1_status: (String) -> [String, Integer]
 
       RE_H1_STATUS: Regexp
-      RE_FIELD_NAME: Regexp
-      RE_FIELD_VALUE: Regexp
+
+      def self.parse_h1_field: (String) -> [String, String]
+
+      RE_H1_FIELD_NAME: Regexp
+      RE_H1_FIELD_VALUE: Regexp
 
     end
   end
