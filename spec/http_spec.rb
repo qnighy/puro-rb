@@ -14,13 +14,12 @@ RSpec.describe "http" do
     sock << "GET / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: test\r\nAccept: text/html\r\n\r\n"
     sock.close_write
 
-    line = sock.readline
-    status, * = (Puro::RE_STATUS_LINE.match(line) || raise("Invalid status line")).captures
-    status = status.to_i
+    line = Puro::Http::Syntax.strip_line(sock.readline)
+    _version, status = Puro::Http::Syntax.parse_h1_status(line)
 
     headers = {};
     loop do
-      line = sock.readline.sub(/\r\n\z/, "")
+      line = Puro::Http::Syntax.strip_line(sock.readline)
       break if line.empty?
 
       name, value = line.split(":", 2)

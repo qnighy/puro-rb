@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "puro/version"
+require_relative "puro/http/syntax"
 require_relative "puro/ws"
 
 # Puro is a WebSocket library that abstracts the connection as streams.

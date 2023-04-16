@@ -1,0 +1,14 @@
+module Puro
+  module Http
+    module Syntax
+      def self.strip_line: (String) -> String
+
+      def self.parse_h1_status: (String) -> [String, Integer]
+
+      RE_H1_STATUS: Regexp
+      RE_FIELD_NAME: Regexp
+      RE_FIELD_VALUE: Regexp
+
+    end
+  end
+end
