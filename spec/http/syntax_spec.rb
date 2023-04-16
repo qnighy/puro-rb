@@ -133,4 +133,61 @@ RSpec.describe Puro::Http::Syntax do
       expect{ parse_h1_field("Content-Type : text/html".b) }.to raise_error("Invalid header line")
     end
   end
+
+  describe ".parse_h1_status" do
+    def parse_h1_fields(lines)
+      fields = []
+      Puro::Http::Syntax.parse_h1_fields(lines) do |name, value|
+        fields << [name, value]
+      end
+      fields
+    end
+
+    it "parses field lines" do
+      lines = [
+        "Content-Type: text/html",
+        "Content-Length: 1234"
+      ]
+      fields = [
+        %w[content-type text/html],
+        %w[content-length 1234]
+      ]
+      expect(parse_h1_fields(lines)).to eq(fields)
+    end
+
+    it "parses obsolete line folding" do
+      lines = [
+        "Field1: foo",
+        "\tbar ",
+        " baz",
+        "Content-Length: 1234"
+      ]
+      fields = [
+        ["field1", "foo bar baz"],
+        %w[content-length 1234]
+      ]
+      expect(parse_h1_fields(lines)).to eq(fields)
+    end
+
+    it "rejects indentation at the top" do
+      lines = [
+        " Content-Type: text/html",
+        "Content-Length: 1234"
+      ]
+      expect { parse_h1_fields(lines) }.to raise_error("Invalid header line")
+    end
+
+    it "enforces syntactic requirement of field-value to the continuation too" do
+      lines = [
+        "Field1: foo",
+        " \v",
+        "Content-Length: 1234"
+      ]
+      expect { parse_h1_fields(lines) }.to raise_error("Invalid header line")
+    end
+
+    it "parses empty list of lines" do
+      expect(parse_h1_fields([])).to eq([])
+    end
+  end
 end

@@ -2,6 +2,27 @@
 
 require "socket"
 
+module Puro
+  module Http
+    class LineReader
+      include Enumerable
+      def initialize(io)
+        @io = io
+      end
+
+      def each(&block)
+        loop do
+          line = Puro::Http::Syntax.strip_line(@io.readline)
+          break if line.empty?
+
+          block.call(line)
+        end
+        nil
+      end
+    end
+  end
+end
+
 RSpec.describe "http" do
   def get
     sock = Socket.tcp("example.com", 80)
@@ -11,12 +32,8 @@ RSpec.describe "http" do
     line = Puro::Http::Syntax.strip_line(sock.readline)
     _version, status = Puro::Http::Syntax.parse_h1_status(line)
 
-    headers = {};
-    loop do
-      line = Puro::Http::Syntax.strip_line(sock.readline)
-      break if line.empty?
-
-      name, value = Puro::Http::Syntax.parse_h1_field(line)
+    headers = {}
+    Puro::Http::Syntax.parse_h1_fields(Puro::Http::LineReader.new(sock)) do |name, value|
       if name == "set-cookie"
         (headers[name] ||= []) << value
       elsif headers.key?(name)

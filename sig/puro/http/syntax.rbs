@@ -12,6 +12,9 @@ module Puro
       RE_H1_FIELD_NAME: Regexp
       RE_H1_FIELD_VALUE: Regexp
 
+      def self.parse_h1_fields: (Enumerable[String]) { (String, String) -> void } -> void
+
+      RE_H1_FIELD_CONT: Regexp
     end
   end
 end

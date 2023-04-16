@@ -58,9 +58,7 @@ module Puro
       def self.parse_h1_field(line)
         name, value = line.split(":", 2)
         # value is nil -> it is empty (len=0) or it has no colon (len=1)
-        if value.nil? || !RE_H1_FIELD_NAME.match?(name) || !RE_H1_FIELD_VALUE.match?(value)
-          raise "Invalid header line"
-        end
+        raise "Invalid header line" if value.nil? || !RE_H1_FIELD_NAME.match?(name) || !RE_H1_FIELD_VALUE.match?(value)
 
         # From §5: "Each field line consists of a case-insensitive field name followed by ..."
         name = name.downcase
@@ -105,6 +103,48 @@ module Puro
       #
       # :nodoc:
       RE_H1_FIELD_VALUE = /\A[^\x00-\x08\x0A-\x1F\x7F]*\z/.freeze
+
+      # Parses a list of HTTP/1.1 header lines.
+      # This is like parse_h1_field but takes into account deprecated line folding in headers.
+      #
+      # {https://datatracker.ietf.org/doc/html/rfc9112#name-obsolete-line-folding RFC9112§5.2}
+      # > Historically, HTTP/1.x field values could be extended over multiple
+      # > lines by preceding each extra line with at least one space or
+      # > horizontal tab (obs-fold).
+      def self.parse_h1_fields(lines, &block)
+        last_kv = nil
+        lines.each do |line|
+          if last_kv && (m_cont = RE_H1_FIELD_CONT.match(line))
+            # Check correctness as in parse_h1_field
+            raise "Invalid header line" unless RE_H1_FIELD_VALUE.match?(m_cont[1])
+
+            # > A user agent that receives an obs-fold in a response message that is
+            # > not within a "message/http" container MUST replace each received obs-
+            # > fold with one or more SP octets prior to interpreting the field
+            # > value.
+            #
+            # As described in the quote above, "one or more" spaces are fine.
+            # Therefore we insert one SP per line continuation
+            last_kv[1] << " ".b
+            # Strip the value as in parse_h1_field
+            last_kv[1] << m_cont[1].strip
+          else
+            block.call(*last_kv) if last_kv
+            last_kv = parse_h1_field(line)
+          end
+        end
+        block.call(*last_kv) if last_kv
+        nil
+      end
+
+      # {https://datatracker.ietf.org/doc/html/rfc9112#name-obsolete-line-folding RFC9112§5.2}
+      # `obs-fold = OWS CRLF RWS`
+      # means that a continuation line is a line indented by /[\t ]+/.
+      # The text after the indentation constitutes a part of the last field being processed.
+      # This regex does not check the value's correctness; that would be done in parse_h1_fields
+      #
+      # :nodoc:
+      RE_H1_FIELD_CONT = /\A[\t ]+(.*)\z/.freeze
     end
   end
 end
