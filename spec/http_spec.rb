@@ -9,10 +9,18 @@ RSpec.describe "http" do
   end
 
   def get_sock(sock)
-    sock << "GET / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: test\r\nAccept: text/html\r\n\r\n"
+    stream = Puro::Http::H1::Stream.new(sock)
+    stream.write_headers(
+      {
+        ":method" => "GET",
+        ":path" => "/",
+        "host" => "example.com",
+        "user-agent" => "test",
+        "accept" => "text/html"
+      }
+    )
     sock.close_write
 
-    stream = Puro::Http::H1::Stream.new(sock)
     headers = stream.read_headers
     status = headers.delete(":status")
 
@@ -33,9 +41,9 @@ RSpec.describe "http" do
       sock = StreamMock.new(
         [
           [:read, "GET / HTTP/1.1\r\n"],
-          [:read, "Host: example.com\r\n"],
-          [:read, "User-Agent: test\r\n"],
-          [:read, "Accept: text/html\r\n"],
+          [:read, "host: example.com\r\n"],
+          [:read, "user-agent: test\r\n"],
+          [:read, "accept: text/html\r\n"],
           [:read, "\r\n"],
           [:write, "HTTP/1.1 200 OK\r\n"],
           [:write, "Content-Type: text/html; charset=UTF-8\r\n"],

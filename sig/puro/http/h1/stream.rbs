@@ -8,6 +8,8 @@ module Puro
 
         def initialize: (_BufReader) -> void
 
+        def write_headers: (Hash[String, String]) -> void
+
         def read_headers: -> Hash[String, String]
       end
     end

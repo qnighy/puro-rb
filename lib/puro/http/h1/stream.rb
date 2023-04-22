@@ -8,6 +8,21 @@ module Puro
           @io = io
         end
 
+        def write_headers(headers)
+          method = headers[":method"] || raise("Missing :method")
+          path = headers[":path"] || raise("Missing :path")
+          host = headers["host"]
+
+          @io << "#{method} #{path} HTTP/1.1\r\n"
+          @io << "host: #{host}\r\n" if host
+          headers.each do |name, value|
+            next if name.start_with?(":") || name == "host"
+
+            @io << "#{name}: #{value}\r\n"
+          end
+          @io << "\r\n"
+        end
+
         def read_headers
           status_line = Puro::Http::Syntax.strip_line(@io.readline)
           version, status = Puro::Http::Syntax.parse_h1_status(status_line)
