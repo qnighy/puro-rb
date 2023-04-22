@@ -1,0 +1,15 @@
+module Puro
+  module Http
+    module H1
+      class Stream
+        @io: _BufReader
+        @server_version: String
+        @status: Integer
+
+        def initialize: (_BufReader) -> void
+
+        def read_headers: -> Hash[String, String]
+      end
+    end
+  end
+end
