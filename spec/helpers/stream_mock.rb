@@ -21,7 +21,6 @@ class StreamMock
         part = @write_buf[0, expected.size]
         if part == expected
           @write_buf[0, expected.size] = "".b
-          @i += 1
         elsif !@write_end && expected.start_with?(part)
           break
         else
@@ -31,7 +30,6 @@ class StreamMock
         raise "Unexpected write after close on the other side of the stream" if @read_end
 
         @read_buf << @actions[@i][1]
-        @i += 1
       when :close
         @read_end = true
         @write_rej = true
@@ -40,6 +38,7 @@ class StreamMock
       when :close_write
         @read_end = true
       end
+      @i += 1
     end
     if @i >= @actions.size
       @read_end = true
@@ -55,18 +54,58 @@ class StreamMock
     self
   end
 
-  def read(length = nil, outbuf = "")
-    raise NotImplementedError, "TODO: text-reading" if length.nil?
+  def close_write
+    @write_end = true
+    internal_advance!
+    nil
+  end
 
+  def read(length = nil, outbuf = "")
     if @read_rej
       raise "Stream already closed"
-    elsif length >= @read_buf.size || @read_end
+    elsif length.nil? && @read_end
+      outbuf[0..-1] = @read_buf
+      @read_buf[0..-1] = "".b
+    elsif length && (length >= @read_buf.size || @read_end)
       outbuf[0..-1] = @read_buf[0, length]
       @read_buf[0, length] = "".b
+      return nil if @read_buf.size == 0 && length == 0
     else
       raise "Blocking read detected"
     end
 
     outbuf
+  end
+
+  def readline(rs = $/, limit = nil, chomp: false)
+    rs, limit = $/, rs if limit.nil? && rs.is_a?(Numeric)
+    raise "TODO: non-line mode" if rs.nil?
+    raise "TODO: paragraph mode" if rs == ""
+
+    if @read_rej
+      raise "Stream already closed"
+    elsif @read_buf.include?(rs) || @read_end
+      nl_pos = @read_buf.index(rs)
+      pos = nl_pos == -1 ? @read_buf.size : nl_pos + rs.size
+      pos = [pos, limit].min if limit
+      raise EOFError, "end of file reached" if pos == 0
+
+      line = @read_buf[0, pos]
+      @read_buf[0, pos] = "".b
+      line = line.sub(/(\r|\r?\n)\z/, "") if chomp
+      line
+    else
+      raise "Blocking read detected"
+    end
+  end
+
+  def close_read
+    @read_rej = true
+    nil
+  end
+
+  def close
+    close_read
+    close_write
   end
 end
