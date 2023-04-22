@@ -1,0 +1,8 @@
+module Puro
+  interface _BufReader
+    include _Reader
+    include _ReaderPartial
+
+    def readline: (?String sep, ?Integer limit) -> String
+  end
+end

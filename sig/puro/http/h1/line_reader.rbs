@@ -1,0 +1,14 @@
+module Puro
+  module Http
+    module H1
+      class LineReader
+        include _Each[String]
+        include Enumerable[String]
+
+        @io: _BufReader
+
+        def initialize: (_BufReader) -> void
+      end
+    end
+  end
+end
