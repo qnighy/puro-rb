@@ -10,6 +10,7 @@ module Puro
     def readline(*args, chomp: false)
       sep, limit = ReaderAdapter.getline_args(args)
       raise "TODO: limit arg" if limit >= 0
+      raise "TODO: chomp" if chomp
 
       last = 0
       buf = readpartial(PARTIAL_LEN)
@@ -21,11 +22,20 @@ module Puro
         pos0 = buf.byteindex(sep, last)
       end
       pos = pos0 + sep.bytesize
-      line = buf[0, pos]
       ungetbyte(buf[pos..]) if pos < buf.size
-      line
+      ReaderAdapter.decode(self, buf[0, pos])
     end
 
+    # :nodoc:
+    def self.decode(io, text)
+      external_encoding = io.external_encoding || Encoding.default_external
+      internal_encoding = io.internal_encoding || Encoding.default_internal
+      text.force_encoding(external_encoding)
+      text.encode!(internal_encoding) if internal_encoding
+      text
+    end
+
+    # :nodoc:
     def self.getline_args(args)
       case args.size
       when 0
