@@ -52,5 +52,8 @@ Style/StringLiteralsInInterpolation:
   Enabled: true
   EnforcedStyle: double_quotes
 
+Style/WordArray:
+  EnforcedStyle: brackets
+
 Layout/LineLength:
   Max: 120

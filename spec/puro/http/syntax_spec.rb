@@ -55,19 +55,19 @@ RSpec.describe Puro::Http::Syntax do
     def parse_h1_field(...) = Puro::Http::Syntax.parse_h1_field(...)
 
     it "parses a simple field line" do
-      expect(parse_h1_field("Content-Type: text/html".b)).to eq(%w[content-type text/html])
+      expect(parse_h1_field("Content-Type: text/html".b)).to eq(["content-type", "text/html"])
     end
 
     it "parses a field line without whitespace" do
-      expect(parse_h1_field("Content-Type:text/html".b)).to eq(%w[content-type text/html])
+      expect(parse_h1_field("Content-Type:text/html".b)).to eq(["content-type", "text/html"])
     end
 
     it "strips arbitrary number of whitespaces in the value" do
-      expect(parse_h1_field("Content-Type: \t text/html \t ".b)).to eq(%w[content-type text/html])
+      expect(parse_h1_field("Content-Type: \t text/html \t ".b)).to eq(["content-type", "text/html"])
     end
 
     it "strips arbitrary number of whitespaces in the value" do
-      expect(parse_h1_field("Content-Type: \t text/html \t ".b)).to eq(%w[content-type text/html])
+      expect(parse_h1_field("Content-Type: \t text/html \t ".b)).to eq(["content-type", "text/html"])
     end
 
     # {https://datatracker.ietf.org/doc/html/rfc9110#name-field-values RFC9110§5.5} states:
@@ -80,8 +80,8 @@ RSpec.describe Puro::Http::Syntax do
     end
 
     it "accepts all VCHAR other than delimiters as a field name" do
-      expect(parse_h1_field("!\#$%&'*+-.^_`|~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz: text/html".b)).to eq(%W[
-                                                                                                                                    !\#$%&'*+-.^_`|~0123456789abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz text/html
+      expect(parse_h1_field("!\#$%&'*+-.^_`|~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz: text/html".b)).to eq([
+                                                                                                                                    "!\#$%&'*+-.^_`|~0123456789abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "text/html"
                                                                                                                                   ])
     end
 
@@ -94,8 +94,8 @@ RSpec.describe Puro::Http::Syntax do
     end
 
     it "accepts all VCHAR as a field value" do
-      expect(parse_h1_field("Foo: !\"\#$%&'()*+,-./:;<=>?@[\\]^_`{/}~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".b)).to eq(%W[
-                                                                                                                                                 foo !\"\#$%&'()*+,-./:;<=>?@[\\]^_`{/}~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+      expect(parse_h1_field("Foo: !\"\#$%&'()*+,-./:;<=>?@[\\]^_`{/}~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".b)).to eq([
+                                                                                                                                                 "foo", "!\"\#$%&'()*+,-./:;<=>?@[\\]^_`{/}~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                                                                                                                                                ])
     end
 
@@ -111,7 +111,7 @@ RSpec.describe Puro::Http::Syntax do
     end
 
     it "retains cases in field values" do
-      expect(parse_h1_field("Foo: FooBar".b)).to eq(%w[foo FooBar])
+      expect(parse_h1_field("Foo: FooBar".b)).to eq(["foo", "FooBar"])
     end
 
     it "retains contiguous whitespaces in field value" do
@@ -155,8 +155,8 @@ RSpec.describe Puro::Http::Syntax do
         "Content-Length: 1234"
       ]
       fields = [
-        %w[content-type text/html],
-        %w[content-length 1234]
+        ["content-type", "text/html"],
+        ["content-length", "1234"]
       ]
       expect(parse_h1_fields(lines)).to eq(fields)
     end
@@ -170,7 +170,7 @@ RSpec.describe Puro::Http::Syntax do
       ]
       fields = [
         ["field1", "foo bar baz"],
-        %w[content-length 1234]
+        ["content-length", "1234"]
       ]
       expect(parse_h1_fields(lines)).to eq(fields)
     end
