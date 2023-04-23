@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "English"
+
 class StreamMock
   def initialize(actions)
     @actions = actions
@@ -42,10 +44,10 @@ class StreamMock
       end
       @i += 1
     end
-    if @i >= @actions.size
-      @read_end = true
-      @write_rej = true
-    end
+    return unless @i >= @actions.size
+
+    @read_end = true
+    @write_rej = true
   end
 
   def <<(obj)
@@ -71,7 +73,7 @@ class StreamMock
     elsif length && (length >= @read_buf.size || @read_end)
       outbuf[0..-1] = @read_buf[0, length]
       @read_buf[0, length] = "".b
-      return nil if @read_buf.size == 0 && length == 0
+      return nil if @read_buf.empty? && length == 0
     else
       raise "Blocking read detected"
     end
@@ -83,8 +85,11 @@ class StreamMock
     read(maxlen, outbuf)
   end
 
-  def readline(rs = $/, limit = nil, chomp: false)
-    rs, limit = $/, rs if limit.nil? && rs.is_a?(Numeric)
+  def readline(rs = $RS, limit = nil, chomp: false)
+    if limit.nil? && rs.is_a?(Numeric)
+      limit = rs
+      rs = $RS
+    end
     raise "TODO: non-line mode" if rs.nil?
     raise "TODO: paragraph mode" if rs == ""
 

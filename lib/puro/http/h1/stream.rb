@@ -58,7 +58,7 @@ module Puro
           content_length = headers["content-length"]
           if status < 200
             # continue with the current state
-          elsif status == 200 && false # method == CONNECT
+          elsif status == 200 && false # rubocop:disable Lint/LiteralAsCondition -- method == CONNECT
             raise "TODO: handle CONNECT case"
           elsif [204, 304].include?(status)
             @read_state = :length_delimited

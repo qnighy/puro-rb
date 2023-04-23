@@ -21,7 +21,8 @@ RSpec.describe Puro::ReaderAdapter do
         io.extend Puro::ReaderAdapter
         expect(io).to receive(:external_encoding).with(no_args).and_return(Encoding::Windows_31J)
         expect(io).to receive(:internal_encoding).with(no_args).and_return(Encoding::UTF_8)
-        expect(io).to receive(:readpartial).with(instance_of(Integer), instance_of(String)).and_return("\x82\xA0".b).once
+        expect(io).to receive(:readpartial).with(instance_of(Integer),
+                                                 instance_of(String)).and_return("\x82\xA0".b).once
         expect(io).to receive(:readpartial).with(instance_of(Integer), instance_of(String)).and_raise(EOFError).once
         text = io.read
         expect(text).to eq("あ")

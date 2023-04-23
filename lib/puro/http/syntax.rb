@@ -56,7 +56,7 @@ module Puro
       #   "A client SHOULD ignore the reason-phrase content because it is not a reliable channel for information"
       #
       # :nodoc:
-      RE_H1_STATUS = %r{\AHTTP/(\d\.\d) ([1-5]\d{2}) [^\x00-\x08\x0A-\x1F\x7F]*\z}.freeze
+      RE_H1_STATUS = %r{\AHTTP/(\d\.\d) ([1-5]\d{2}) [^\x00-\x08\x0A-\x1F\x7F]*\z}
 
       # Parses HTTP/1.1 field line
       #
@@ -89,7 +89,7 @@ module Puro
       # >                ; any VCHAR, except delimiters
       #
       # :nodoc:
-      RE_H1_FIELD_NAME = /\A[!#$%&'*+\-.^_`|~0-9A-Za-z]+\z/.freeze
+      RE_H1_FIELD_NAME = /\A[!#$%&'*+\-.^_`|~0-9A-Za-z]+\z/
 
       # {https://datatracker.ietf.org/doc/html/rfc9110#name-field-values RFC9110§5.5}
       #
@@ -110,7 +110,7 @@ module Puro
       # and strip the leading and trailing whitespaces later.
       #
       # :nodoc:
-      RE_H1_FIELD_VALUE = /\A[^\x00-\x08\x0A-\x1F\x7F]*\z/.freeze
+      RE_H1_FIELD_VALUE = /\A[^\x00-\x08\x0A-\x1F\x7F]*\z/
 
       # Parses a list of HTTP/1.1 header lines.
       # This is like parse_h1_field but takes into account deprecated line folding in headers.
@@ -152,7 +152,7 @@ module Puro
       # This regex does not check the value's correctness; that would be done in parse_h1_fields
       #
       # :nodoc:
-      RE_H1_FIELD_CONT = /\A[\t ]+(.*)\z/.freeze
+      RE_H1_FIELD_CONT = /\A[\t ]+(.*)\z/
     end
   end
 end

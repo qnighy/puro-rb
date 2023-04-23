@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength
+
 require "puro/http/syntax"
 
 RSpec.describe Puro::Http::Syntax do
@@ -78,7 +80,9 @@ RSpec.describe Puro::Http::Syntax do
     end
 
     it "accepts all VCHAR other than delimiters as a field name" do
-      expect(parse_h1_field("!\#$%&'*+-.^_`|~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz: text/html".b)).to eq(%W[!\#$%&'*+-.^_`|~0123456789abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz text/html])
+      expect(parse_h1_field("!\#$%&'*+-.^_`|~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz: text/html".b)).to eq(%W[
+                                                                                                                                    !\#$%&'*+-.^_`|~0123456789abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz text/html
+                                                                                                                                  ])
     end
 
     it "rejects delimiters and non-visible characters as a field name" do
@@ -90,7 +94,9 @@ RSpec.describe Puro::Http::Syntax do
     end
 
     it "accepts all VCHAR as a field value" do
-      expect(parse_h1_field("Foo: !\"\#$%&'()*+,-./:;<=>?@[\\]^_`{/}~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".b)).to eq(%W[foo !\"\#$%&'()*+,-./:;<=>?@[\\]^_`{/}~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz])
+      expect(parse_h1_field("Foo: !\"\#$%&'()*+,-./:;<=>?@[\\]^_`{/}~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".b)).to eq(%W[
+                                                                                                                                                 foo !\"\#$%&'()*+,-./:;<=>?@[\\]^_`{/}~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+                                                                                                                                               ])
     end
 
     it "accepts all upper half character as a field value (obs-text)" do
@@ -113,24 +119,24 @@ RSpec.describe Puro::Http::Syntax do
     end
 
     it "errors on empty line" do
-      expect{ parse_h1_field("".b) }.to raise_error("Invalid header line")
+      expect { parse_h1_field("".b) }.to raise_error("Invalid header line")
     end
 
     it "errors on missing colon" do
-      expect{ parse_h1_field("Content-Type".b) }.to raise_error("Invalid header line")
+      expect { parse_h1_field("Content-Type".b) }.to raise_error("Invalid header line")
     end
 
     it "errors on empty field name" do
-      expect{ parse_h1_field(": text/html".b) }.to raise_error("Invalid header line")
+      expect { parse_h1_field(": text/html".b) }.to raise_error("Invalid header line")
     end
 
     # This is obs-fold; should be handled somewhere other than parse_h1_field
     it "errors on space before field name" do
-      expect{ parse_h1_field(" Content-Type: text/html".b) }.to raise_error("Invalid header line")
+      expect { parse_h1_field(" Content-Type: text/html".b) }.to raise_error("Invalid header line")
     end
 
     it "errors on space after field name" do
-      expect{ parse_h1_field("Content-Type : text/html".b) }.to raise_error("Invalid header line")
+      expect { parse_h1_field("Content-Type : text/html".b) }.to raise_error("Invalid header line")
     end
   end
 
@@ -191,3 +197,5 @@ RSpec.describe Puro::Http::Syntax do
     end
   end
 end
+
+# rubocop:enable Layout/LineLength

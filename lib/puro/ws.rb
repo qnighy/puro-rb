@@ -122,18 +122,15 @@ module Puro
         if @handshake
           @handshake << @socket.read(BUF_LEN)
           if @handshake.finished?
-            unless @handshake.valid?
-              raise "TODO: handshake failure"
-            end
+            raise "TODO: handshake failure" unless @handshake.valid?
+
             @frame = WebSocket::Frame::Incoming::Client.new(version: @handshake.version)
             @frame << @handshake.leftovers
             @handshake = nil
           end
         elsif @frame
           @frame << @socket.read(BUF_LEN)
-          if @frame.error?
-            raise "TODO: frame error"
-          end
+          raise "TODO: frame error" if @frame.error?
         else
           raise ArgumentError, "Not connected yet"
         end

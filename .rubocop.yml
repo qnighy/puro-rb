@@ -1,6 +1,49 @@
 AllCops:
   TargetRubyVersion: 3.0
 
+Metrics/AbcSize:
+  Max: 100
+
+Metrics/BlockLength:
+  Max: 200
+
+Metrics/BlockNesting:
+  Max: 10
+
+Metrics/ClassLength:
+  Max: 1200
+
+Metrics/CollectionLiteralLength:
+  LengthThreshold: 1000
+
+Metrics/CyclomaticComplexity:
+  Max: 50
+
+Metrics/MethodLength:
+  Max: 150
+
+Metrics/ModuleLength:
+  Max: 1200
+
+Metrics/ParameterLists:
+  Max: 80
+
+Metrics/PerceivedComplexity:
+  Max: 100
+
+Naming/MethodParameterName:
+  MinNameLength: 1
+
+Style/AccessModifierDeclarations:
+  Enabled: false
+
+Style/Documentation:
+  # Enable later
+  Enabled: false
+
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes

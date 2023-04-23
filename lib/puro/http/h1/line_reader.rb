@@ -22,4 +22,3 @@ module Puro
     end
   end
 end
-

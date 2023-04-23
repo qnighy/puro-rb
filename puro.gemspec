@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Puro is a WebSocket client that tries to expose appropriately abstracted APIs."
   spec.homepage = "https://github.com/qnighy/puro-rb"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 3.0.0"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org/"
 
