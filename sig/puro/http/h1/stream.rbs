@@ -2,7 +2,14 @@ module Puro
   module Http
     module H1
       class Stream
+        attr_reader reader: BodyReader
+
         @io: _BufReader
+        @write_state: :header | :body | :fin
+        @read_state: :header | :length_delimited | :chunked | :indefinite | :fin
+        @read_length: Integer
+        @read_pos: Integer
+        @reader: BodyReader
         @server_version: String
         @status: Integer
 
@@ -11,6 +18,12 @@ module Puro
         def write_headers: (Hash[String, String]) -> void
 
         def read_headers: -> Hash[String, String]
+
+        class BodyReader
+          @stream: Stream
+
+          def initialize: (Stream) -> void
+        end
       end
     end
   end

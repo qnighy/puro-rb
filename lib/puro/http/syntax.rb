@@ -23,6 +23,14 @@ module Puro
         line[0...-2]
       end
 
+      def self.split(text)
+        text.split(",").map do |elem|
+          elem = elem.strip
+          elem = nil if elem == ""
+          elem
+        end.compact
+      end
+
       # Parses HTTP/1.1 status line
       #
       # Reference:

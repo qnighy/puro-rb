@@ -22,9 +22,9 @@ RSpec.describe "http" do
     sock.close_write
 
     headers = stream.read_headers
-    status = headers.delete(":status")
+    status = headers.delete(":status").to_i
 
-    content = sock.read
+    content = stream.reader.read
     sock.close
 
     [status, headers, content]

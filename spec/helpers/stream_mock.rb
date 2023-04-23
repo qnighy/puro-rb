@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StreamMock
   def initialize(actions)
     @actions = actions
@@ -60,7 +62,7 @@ class StreamMock
     nil
   end
 
-  def read(length = nil, outbuf = "")
+  def read(length = nil, outbuf = +"")
     if @read_rej
       raise "Stream already closed"
     elsif length.nil? && @read_end
@@ -75,6 +77,10 @@ class StreamMock
     end
 
     outbuf
+  end
+
+  def readpartial(maxlen, outbuf = +"")
+    read(maxlen, outbuf)
   end
 
   def readline(rs = $/, limit = nil, chomp: false)
