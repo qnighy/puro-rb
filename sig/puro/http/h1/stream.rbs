@@ -13,16 +13,21 @@ module Puro
         @server_version: String
         @status: Integer
 
-        def initialize: (_BufReader) -> void
+        def initialize: (_BufReader io) -> void
 
-        def write_headers: (Hash[String, String]) -> void
+        def write_headers: (Hash[String, String] headers) -> void
 
         def read_headers: -> Hash[String, String]
+
+        def readpartial_body: (Integer maxlen, String outbuf) -> String
 
         class BodyReader
           @stream: Stream
 
-          def initialize: (Stream) -> void
+          def initialize: (Stream stream) -> void
+          def readpartial: (Integer maxlen, ?String outbuf) -> String
+
+          def read: -> String
         end
       end
     end

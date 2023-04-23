@@ -7,7 +7,7 @@ module Puro
 
         @io: _BufReader
 
-        def initialize: (_BufReader) -> void
+        def initialize: (_BufReader io) -> void
       end
     end
   end

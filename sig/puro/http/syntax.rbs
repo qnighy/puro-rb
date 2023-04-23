@@ -1,18 +1,20 @@
 module Puro
   module Http
     module Syntax
-      def self.strip_line: (String) -> String
+      def self.strip_line: (String line) -> String
 
-      def self.parse_h1_status: (String) -> [String, Integer]
+      def self.split: (String text) -> Array[String]
+
+      def self.parse_h1_status: (String line) -> [String, Integer]
 
       RE_H1_STATUS: Regexp
 
-      def self.parse_h1_field: (String) -> [String, String]
+      def self.parse_h1_field: (String line) -> [String, String]
 
       RE_H1_FIELD_NAME: Regexp
       RE_H1_FIELD_VALUE: Regexp
 
-      def self.parse_h1_fields: (Enumerable[String]) { (String, String) -> void } -> void
+      def self.parse_h1_fields: (Enumerable[String] lines) { (String name, String value) -> void } -> void
 
       RE_H1_FIELD_CONT: Regexp
     end
