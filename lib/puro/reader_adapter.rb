@@ -7,6 +7,39 @@ module Puro
     # :nodoc:
     PARTIAL_LEN = 4096
 
+    def read(maxlen = nil, outbuf = +"".b)
+      if maxlen.nil?
+        # Text mode
+        outbuf.clear
+        outbuf.force_encoding(Encoding::ASCII_8BIT)
+        inbuf = nil
+        begin
+          outbuf = readpartial(PARTIAL_LEN, outbuf)
+          loop do
+            outbuf << readpartial(PARTIAL_LEN, inbuf ||= +"".b)
+          end
+        rescue EOFError
+          return nil if outbuf.empty?
+          # continue otherwise
+        end
+        ReaderAdapter.decode(self, outbuf)
+      else
+        # Binary mode
+        outbuf.clear
+        inbuf = nil
+        begin
+          outbuf = readpartial(maxlen, outbuf)
+          while outbuf.bytesize < maxlen
+            outbuf << readpartial(maxlen - outbuf.size, inbuf ||= +"".b)
+          end
+        rescue EOFError
+          return nil if outbuf.empty? && maxlen > 0
+          # continue otherwise
+        end
+        outbuf
+      end
+    end
+
     def readline(*args, chomp: false)
       sep, limit = ReaderAdapter.getline_args(args)
       raise "TODO: limit arg" if limit >= 0

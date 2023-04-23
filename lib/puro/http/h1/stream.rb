@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "puro/reader_adapter"
+
 module Puro
   module Http
     module H1
@@ -99,6 +101,8 @@ module Puro
 
         # :nodoc:
         class BodyReader
+          include ReaderAdapter
+
           def initialize(stream)
             @stream = stream
           end
@@ -107,15 +111,8 @@ module Puro
             @stream.readpartial_body(maxlen, outbuf)
           end
 
-          def read
-            buf = +"".b
-            loop do
-              buf << readpartial(1024)
-            rescue EOFError
-              break
-            end
-            buf
-          end
+          def internal_encoding = nil
+          def external_encoding = Encoding::ASCII_8BIT
         end
       end
     end

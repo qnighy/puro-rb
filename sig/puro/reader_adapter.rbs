@@ -14,6 +14,7 @@ module Puro
 
     PARTIAL_LEN: Integer
 
+    def read: (?int? length, ?string outbuf) -> String?
     def readline: (?String sep, ?Integer limit, ?chomp: bool) -> String
 
     def self.decode: (_Encodable io, String text) -> String

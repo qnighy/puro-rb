@@ -22,6 +22,7 @@ module Puro
         def readpartial_body: (Integer maxlen, String outbuf) -> String
 
         class BodyReader
+          include ReaderAdapter
           @stream: Stream
 
           def initialize: (Stream stream) -> void
