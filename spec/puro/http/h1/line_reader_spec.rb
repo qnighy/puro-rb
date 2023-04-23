@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "puro/http/h1/line_reader"
-require_relative "../../helpers/stream_mock"
+require_relative "../../../helpers/stream_mock"
 
 RSpec.describe Puro::Http::H1::LineReader do
   it "collects lines before empty line" do
