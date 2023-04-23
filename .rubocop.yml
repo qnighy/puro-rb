@@ -1,6 +1,9 @@
 AllCops:
   TargetRubyVersion: 3.0
 
+require:
+  - rubocop-rspec
+
 Metrics/AbcSize:
   Max: 100
 
@@ -57,3 +60,12 @@ Style/WordArray:
 
 Layout/LineLength:
   Max: 120
+
+RSpec/DescribedClass:
+  EnforcedStyle: explicit
+
+RSpec/ExampleLength:
+  Max: 80
+
+RSpec/MultipleExpectations:
+  Max: 10

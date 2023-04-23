@@ -3,7 +3,7 @@
 require "socket"
 require_relative "./helpers/stream_mock"
 
-RSpec.describe "http" do
+RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
   def get
     get_sock(Socket.tcp("example.com", 80))
   end

@@ -51,7 +51,7 @@ RSpec.describe Puro::Http::Syntax do
     end
   end
 
-  describe ".parse_h1_status" do
+  describe ".parse_h1_field" do
     def parse_h1_field(...) = Puro::Http::Syntax.parse_h1_field(...)
 
     it "parses a simple field line" do
@@ -60,10 +60,6 @@ RSpec.describe Puro::Http::Syntax do
 
     it "parses a field line without whitespace" do
       expect(parse_h1_field("Content-Type:text/html".b)).to eq(["content-type", "text/html"])
-    end
-
-    it "strips arbitrary number of whitespaces in the value" do
-      expect(parse_h1_field("Content-Type: \t text/html \t ".b)).to eq(["content-type", "text/html"])
     end
 
     it "strips arbitrary number of whitespaces in the value" do
@@ -140,7 +136,7 @@ RSpec.describe Puro::Http::Syntax do
     end
   end
 
-  describe ".parse_h1_status" do
+  describe ".parse_h1_fields" do
     def parse_h1_fields(lines)
       fields = []
       Puro::Http::Syntax.parse_h1_fields(lines) do |name, value|
