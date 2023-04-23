@@ -1,0 +1,16 @@
+module Puro
+  interface _ReaderBase
+    def readpartial: (int maxlen, ?string outbuf) -> String
+    def ungetbyte: (String | Integer arg0) -> nil
+  end
+
+  module ReaderAdapter
+    include _ReaderBase
+
+    PARTIAL_LEN: Integer
+
+    def readline: (?String sep, ?Integer limit, ?chomp: bool) -> String
+
+    def self.getline_args: (([] | [string?] | [Integer] | [string?, Integer]) args) -> [String?, Integer]
+  end
+end
