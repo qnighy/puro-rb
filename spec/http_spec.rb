@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "puro"
 require "socket"
 require_relative "./helpers/stream_mock"
 
