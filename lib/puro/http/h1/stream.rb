@@ -126,7 +126,8 @@ module Puro
             # > invalid Content-Length header field, then the message framing is
             # > invalid and the recipient MUST treat it as an unrecoverable
             # > error, unless (...)
-            # Regarding to the exception above, {https://datatracker.ietf.org/doc/html/rfc9110#section-8.6-13 RFC9110 §8.6}:
+            # Regarding to the exception above,
+            # {https://datatracker.ietf.org/doc/html/rfc9110#section-8.6-13 RFC9110 §8.6}:
             # > a recipient of a Content-Length header field value
             # > consisting of the same decimal value repeated as a comma-separated
             # > list (e.g, "Content-Length: 42, 42") MAY either reject the message as
