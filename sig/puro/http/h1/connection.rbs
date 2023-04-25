@@ -1,0 +1,12 @@
+module Puro
+  module Http
+    module H1
+      class Connection
+        @impl: ConnectionImpl
+        @last_id: Integer
+
+        def open_stream: -> Stream
+      end
+    end
+  end
+end

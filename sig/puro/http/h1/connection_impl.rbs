@@ -2,14 +2,11 @@ module Puro
   module Http
     module H1
       class ConnectionImpl
-        attr_reader reader: BodyReader
-
         @io: _BufReader
         @write_state: :header | :body | :fin
         @read_state: :header | :length_delimited | :chunked | :indefinite | :fin
         @read_length: Integer
         @read_pos: Integer
-        @reader: BodyReader
         @server_version: String
         @status: Integer
 
@@ -20,16 +17,6 @@ module Puro
         def read_headers: -> Hash[String, String]
 
         def readpartial_body: (Integer maxlen, String outbuf) -> String
-
-        class BodyReader
-          include ReaderAdapter
-          @stream: ConnectionImpl
-
-          def initialize: (ConnectionImpl stream) -> void
-          def readpartial: (Integer maxlen, ?String outbuf) -> String
-
-          def read: -> String
-        end
       end
     end
   end

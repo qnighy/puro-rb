@@ -10,7 +10,8 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
   end
 
   def get_sock(sock)
-    stream = Puro::Http::H1::ConnectionImpl.new(sock)
+    conn = Puro::Http::H1::Connection.new(sock)
+    stream = conn.open_stream
     stream.write_headers(
       {
         ":method" => "GET",

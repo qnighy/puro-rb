@@ -1,0 +1,31 @@
+module Puro
+  module Http
+    module H1
+      class Stream
+        @impl: ConnectionImpl
+        @id: Integer
+        @reader: BodyReader
+
+        attr_reader reader: BodyReader
+
+        # :nodoc:
+        def initialize: (ConnectionImpl impl, Integer id) -> void
+
+        def write_headers: (Hash[String, String] headers) -> void
+
+        def read_headers: -> Hash[String, String]
+
+        class BodyReader
+          include ReaderAdapter
+          @impl: ConnectionImpl
+          @id: Integer
+
+          def initialize: (ConnectionImpl impl, Integer id) -> void
+
+          def internal_encoding: -> Encoding?
+          def external_encoding: -> Encoding?
+        end
+      end
+    end
+  end
+end

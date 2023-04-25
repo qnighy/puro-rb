@@ -6,13 +6,10 @@ module Puro
   module Http
     module H1
       class ConnectionImpl
-        attr_reader :reader
-
         def initialize(io)
           @io = io
           @write_state = :header
           @read_state = :header
-          @reader = BodyReader.new(self)
         end
 
         def write_headers(headers)
@@ -176,22 +173,6 @@ module Puro
           else
             raise ArgumentError, "Invalid read on state #{@read_state}"
           end
-        end
-
-        # :nodoc:
-        class BodyReader
-          include ReaderAdapter
-
-          def initialize(stream)
-            @stream = stream
-          end
-
-          def readpartial(maxlen, outbuf = +"")
-            @stream.readpartial_body(maxlen, outbuf)
-          end
-
-          def internal_encoding = nil
-          def external_encoding = Encoding::ASCII_8BIT
         end
       end
     end
