@@ -5,7 +5,7 @@ require "puro/reader_adapter"
 module Puro
   module Http
     module H1
-      class Stream
+      class ConnectionImpl
         attr_reader :reader
 
         def initialize(io)

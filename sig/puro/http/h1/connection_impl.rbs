@@ -1,7 +1,7 @@
 module Puro
   module Http
     module H1
-      class Stream
+      class ConnectionImpl
         attr_reader reader: BodyReader
 
         @io: _BufReader
@@ -23,9 +23,9 @@ module Puro
 
         class BodyReader
           include ReaderAdapter
-          @stream: Stream
+          @stream: ConnectionImpl
 
-          def initialize: (Stream stream) -> void
+          def initialize: (ConnectionImpl stream) -> void
           def readpartial: (Integer maxlen, ?String outbuf) -> String
 
           def read: -> String
