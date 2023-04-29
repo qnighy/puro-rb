@@ -46,7 +46,7 @@ RSpec.describe Puro::IOAdapter do
         RSpec::Mocks.space.proxy_for(io).reset
 
         allow(io).to receive(:readpartial).with(instance_of(Integer), instance_of(String)).and_raise(EOFError)
-        expect(io.read(10)).to eq(nil)
+        expect(io.read(10)).to be_nil
         RSpec::Mocks.space.proxy_for(io).reset
 
         allow(io).to receive(:readpartial).with(instance_of(Integer), instance_of(String)).and_raise(EOFError)

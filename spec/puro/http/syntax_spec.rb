@@ -96,12 +96,12 @@ RSpec.describe Puro::Http::Syntax do
     end
 
     it "accepts all upper half character as a field value (obs-text)" do
-      bytes = ("\x80".b.."\xFF".b).to_a.join
+      bytes = (("\x80".b)..("\xFF".b)).to_a.join
       expect(parse_h1_field("Foo: #{bytes}".b)).to eq(["foo", bytes])
     end
 
     it "rejects non-visible 7-bit characters, other than space, as a field value" do
-      ([*"\x00".b.."\x20".b, "\x7F".b] - ["\t".b, " ".b]).each do |ch|
+      ([*("\x00".b)..("\x20".b), "\x7F".b] - ["\t".b, " ".b]).each do |ch|
         expect { parse_h1_field("Foo: Foo#{ch}Bar".b) }.to raise_error("Invalid header line")
       end
     end
