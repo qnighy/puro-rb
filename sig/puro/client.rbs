@@ -1,0 +1,8 @@
+module Puro
+  class Client
+    @chain: MiddlewareChain
+    def initialize: (connection_middlewares?: Array[Puro::Middleware]) -> void
+
+    def request: (Symbol method, String url, middlewares: Array[Middleware]) -> [Integer, Hash[String, String], String]
+  end
+end

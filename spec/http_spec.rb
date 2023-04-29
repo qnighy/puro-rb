@@ -7,10 +7,10 @@ require_relative "./helpers/io_mock"
 RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
   describe "http" do
     it "requests an HTTP resource successfully (real)" do
-      status, headers, content = Puro::Http.request(
+      client = Puro::Client.new
+      status, headers, content = client.request(
         :GET,
-        "http://example.com",
-        middlewares: [Puro::BaseMiddleware]
+        "http://example.com"
       )
       expect(status).to be(200)
       expect(headers["content-type"]).to match(%r{^text/html\b})
@@ -18,10 +18,10 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
     end
 
     it "requests an HTTPS resource successfully (real)" do
-      status, headers, content = Puro::Http.request(
+      client = Puro::Client.new
+      status, headers, content = client.request(
         :GET,
-        "https://example.com",
-        middlewares: [Puro::BaseMiddleware]
+        "https://example.com"
       )
       expect(status).to be(200)
       expect(headers["content-type"]).to match(%r{^text/html\b})
@@ -49,10 +49,10 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
       middleware.extend(Puro::Middleware)
       allow(middleware).to receive(:connect_tcp).and_return(sock)
 
-      status, headers, content = Puro::Http.request(
+      client = Puro::Client.new(connection_middlewares: [middleware, Puro::BaseMiddleware])
+      status, headers, content = client.request(
         :GET,
-        "http://example.com",
-        middlewares: [middleware, Puro::BaseMiddleware]
+        "http://example.com"
       )
       expect(status).to be(200)
       expect(headers["content-type"]).to match(%r{^text/html\b})
@@ -82,10 +82,10 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
       middleware.extend(Puro::Middleware)
       allow(middleware).to receive(:connect_tls).and_return(sock)
 
-      status, headers, content = Puro::Http.request(
+      client = Puro::Client.new(connection_middlewares: [middleware, Puro::BaseMiddleware])
+      status, headers, content = client.request(
         :GET,
-        "https://example.com",
-        middlewares: [middleware, Puro::BaseMiddleware]
+        "https://example.com"
       )
       expect(status).to be(200)
       expect(headers["content-type"]).to match(%r{^text/html\b})

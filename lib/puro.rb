@@ -8,6 +8,7 @@ module Puro
   autoload :MiddlewareChain, "puro/middleware"
   autoload :Middleware, "puro/middleware"
   autoload :BaseMiddleware, "puro/middleware"
+  autoload :Client, "puro/client"
   autoload :WS, "puro/ws"
 
   class Error < StandardError; end
