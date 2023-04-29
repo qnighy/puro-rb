@@ -14,9 +14,9 @@ module Puro
       hostname = uri.hostname || raise("Missing hostname: #{url}")
       conn = case uri.scheme
              when "http"
-               @chain.connect_http(@chain, hostname, uri.port || HTTP_DEFAULT_PORT)
+               @chain.connect_http(@chain, hostname, uri.port || Puro::Http::HTTP_DEFAULT_PORT)
              when "https"
-               @chain.connect_https(@chain, hostname, uri.port || HTTPS_DEFAULT_PORT)
+               @chain.connect_https(@chain, hostname, uri.port || Puro::Http::HTTPS_DEFAULT_PORT)
              else
                raise "Invalid scheme #{uri.scheme}: #{url}"
              end
