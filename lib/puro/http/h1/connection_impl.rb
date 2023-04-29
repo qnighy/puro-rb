@@ -175,6 +175,7 @@ module Puro
             end
             @io.readpartial(tmaxlen, outbuf).tap do |result|
               raise EOFError if result == "" && maxlen > 0
+
               @read_pos += result.bytesize
             end
           when :chunked
