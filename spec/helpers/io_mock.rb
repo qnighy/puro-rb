@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-require "English"
+require "puro/io_adapter"
 
 class IOMock
+  include Puro::IOAdapter
+
   def initialize(actions)
     @actions = actions
     @i = 0
@@ -68,7 +70,7 @@ class IOMock
     nil
   end
 
-  def read(length = nil, outbuf = +"")
+  def readpartial(length = nil, outbuf = +"")
     if @read_rej
       raise "Stream already closed"
     elsif length.nil? && @read_end
@@ -85,32 +87,14 @@ class IOMock
     outbuf
   end
 
-  def readpartial(maxlen, outbuf = +"")
-    read(maxlen, outbuf)
-  end
-
-  def readline(rs = $RS, limit = nil, chomp: false)
-    if limit.nil? && rs.is_a?(Numeric)
-      limit = rs
-      rs = $RS
-    end
-    raise "TODO: non-line mode" if rs.nil?
-    raise "TODO: paragraph mode" if rs == ""
-
-    if @read_rej
-      raise "Stream already closed"
-    elsif @read_buf.include?(rs) || @read_end
-      nl_pos = @read_buf.index(rs)
-      pos = nl_pos == -1 ? @read_buf.size : nl_pos + rs.size
-      pos = [pos, limit].min if limit
-      raise EOFError, "end of file reached" if pos == 0
-
-      line = @read_buf[0, pos]
-      @read_buf[0, pos] = "".b
-      line = line.sub(/(\r|\r?\n)\z/, "") if chomp
-      line
+  def ungetbyte(arg0)
+    case arg0
+    when nil
+      nil
+    when Integer
+      @read_buf[0, 0] = arg0.chr
     else
-      raise "Blocking read detected"
+      @read_buf[0, 0] = arg0
     end
   end
 
@@ -123,4 +107,7 @@ class IOMock
     close_read
     close_write
   end
+
+  def external_encoding = Encoding::ASCII_8BIT
+  def internal_encoding = nil
 end
