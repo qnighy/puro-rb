@@ -8,6 +8,10 @@ require "websocket"
 module Puro
   # Puro's WebSocket support.
   module WS
+    autoload :Error, "puro/ws/error"
+    autoload :InvalidURIError, "puro/ws/error"
+    autoload :ConnectionError, "puro/ws/error"
+
     # Opens the new WebSocket connection.
     def self.open(url, &block)
       url_parsed =
