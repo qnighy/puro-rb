@@ -11,6 +11,7 @@ RSpec.describe StreamMock do
       ]
     )
     stream << "ping"
+    stream.flush
     expect(stream.read(4)).to eq("pong")
   end
 end

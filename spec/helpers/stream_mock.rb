@@ -54,6 +54,10 @@ class StreamMock
     raise "Write on a closed stream" if @write_buf.nil?
 
     @write_buf << obj.to_s.b
+    self
+  end
+
+  def flush
     internal_advance!
     self
   end

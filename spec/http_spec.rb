@@ -21,7 +21,7 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
         "accept" => "text/html"
       }
     )
-    sock.close_write
+    stream.flush
 
     headers = stream.read_headers
     status = headers.delete(":status").to_i

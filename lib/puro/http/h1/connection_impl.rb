@@ -31,6 +31,10 @@ module Puro
           nil
         end
 
+        def flush
+          @io.flush
+        end
+
         def read_headers
           raise ArgumentError, "Invalid state: #{@read_state}" unless @read_state == :header
 
@@ -163,8 +167,15 @@ module Puro
           case @read_state
           when :length_delimited
             tmaxlen = [maxlen, @read_length - @read_pos].min
+            if maxlen == 0
+              outbuf.clear
+              return outbuf
+            elsif tmaxlen == 0
+              raise EOFError
+            end
             @io.readpartial(tmaxlen, outbuf).tap do |result|
               raise EOFError if result == "" && maxlen > 0
+              @read_pos += result.bytesize
             end
           when :chunked
             raise "TODO: chunked"

@@ -22,6 +22,10 @@ module Puro
           @impl.write_headers(headers)
         end
 
+        def flush
+          @impl.flush
+        end
+
         def read_headers
           @impl.read_headers
         end
