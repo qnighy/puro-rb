@@ -2,6 +2,7 @@
 
 require "socket"
 require "openssl"
+require "puro/http/h1/connection"
 
 module Puro
   class MiddlewareChain

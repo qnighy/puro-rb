@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require "puro/io_adapter"
+require "puro/http/h1/line_reader"
+require "puro/http/syntax"
 
 module Puro
   module Http

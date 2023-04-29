@@ -61,6 +61,10 @@ Style/WordArray:
 Layout/LineLength:
   Max: 120
 
+RSpec/DescribeClass:
+  Exclude:
+    - "**/spec/real/**/*"
+
 RSpec/DescribedClass:
   EnforcedStyle: explicit
 
