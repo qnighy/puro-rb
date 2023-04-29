@@ -2,7 +2,7 @@
 
 require "English"
 
-class StreamMock
+class IOMock
   def initialize(actions)
     @actions = actions
     @i = 0

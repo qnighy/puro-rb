@@ -2,7 +2,7 @@
 
 require "puro"
 require "socket"
-require_relative "./helpers/stream_mock"
+require_relative "./helpers/io_mock"
 
 RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
   describe "http" do
@@ -29,7 +29,7 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
     end
 
     it "requests an HTTP resource successfully (mocked)" do
-      sock = StreamMock.new(
+      sock = IOMock.new(
         [
           [:read, "GET / HTTP/1.1\r\n"],
           [:read, "host: example.com\r\n"],
@@ -62,7 +62,7 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
     end
 
     it "requests an HTTPS resource successfully (mocked)" do
-      sock = StreamMock.new(
+      sock = IOMock.new(
         [
           [:read, "GET / HTTP/1.1\r\n"],
           [:read, "host: example.com\r\n"],

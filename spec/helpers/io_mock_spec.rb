@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "./stream_mock"
+require_relative "./io_mock"
 
-RSpec.describe StreamMock do
+RSpec.describe IOMock do
   it "mocks stream" do
-    stream = StreamMock.new(
+    stream = IOMock.new(
       [
         [:read, "ping"],
         [:write, "pong"]
