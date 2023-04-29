@@ -1,5 +1,5 @@
 module Puro
   module Http
-    def self.request: (middlewares: Array[Middleware]) -> [Integer, Hash[String, String], String]
+    def self.request: (Symbol method, String url, middlewares: Array[Middleware]) -> [Integer, Hash[String, String], String]
   end
 end

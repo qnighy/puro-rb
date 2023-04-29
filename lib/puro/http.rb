@@ -1,23 +1,33 @@
 # frozen_string_literal: true
 
 require "uri"
-require "socket"
-require "openssl"
 
 module Puro
   module Http
     autoload :H1, "puro/http/h1"
     autoload :Syntax, "puro/http/syntax"
 
-    def self.request(middlewares:)
+    HTTP_DEFAULT_PORT = 80
+    HTTPS_DEFAULT_PORT = 443
+
+    def self.request(method, url, middlewares:)
+      uri = URI.parse(url)
+      hostname = uri.hostname || raise("Missing hostname: #{url}")
       chain = MiddlewareChain.build(middlewares)
-      conn = chain.connect_http(chain, "example.com", 80)
+      conn = case uri.scheme
+             when "http"
+               chain.connect_http(chain, hostname, uri.port || HTTP_DEFAULT_PORT)
+             when "https"
+               chain.connect_https(chain, hostname, uri.port || HTTPS_DEFAULT_PORT)
+             else
+               raise "Invalid scheme #{uri.scheme}: #{url}"
+             end
       stream = conn.open_stream
       stream.write_headers(
         {
-          ":method" => "GET",
-          ":path" => "/",
-          "host" => "example.com",
+          ":method" => method.to_s,
+          ":path" => uri.path.empty? ? "/" : uri.path,
+          "host" => hostname,
           "user-agent" => "test",
           "accept" => "text/html"
         }

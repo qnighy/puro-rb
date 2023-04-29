@@ -8,6 +8,8 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
   describe "http" do
     it "requests an HTTP resource successfully (real)" do
       status, headers, content = Puro::Http.request(
+        :GET,
+        "http://example.com",
         middlewares: [Puro::BaseMiddleware]
       )
       expect(status).to be(200)
@@ -37,6 +39,8 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
       allow(middleware).to receive(:connect_tcp).and_return(sock)
 
       status, headers, content = Puro::Http.request(
+        :GET,
+        "http://example.com",
         middlewares: [middleware, Puro::BaseMiddleware]
       )
       expect(status).to be(200)
