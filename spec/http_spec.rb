@@ -3,6 +3,7 @@
 require "puro"
 require "socket"
 require_relative "./helpers/io_mock"
+require_relative "./helpers/sock_mock_middleware"
 
 RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
   describe "http" do
@@ -45,11 +46,10 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
         ]
       )
 
-      middleware = Object.new
-      middleware.extend(Puro::Middleware)
-      allow(middleware).to receive(:connect_tcp).and_return(sock)
+      sock_mock = SockMockMiddleware.new
+      sock_mock.stub_tcp("example.com", 80) { sock }
 
-      client = Puro::Client.new(connection_middlewares: [middleware, Puro::BaseMiddleware])
+      client = Puro::Client.new(connection_middlewares: [sock_mock, Puro::BaseMiddleware])
       status, headers, content = client.request(
         :GET,
         "http://example.com"
@@ -57,8 +57,6 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
       expect(status).to be(200)
       expect(headers["content-type"]).to match(%r{^text/html\b})
       expect(content).to eq("Hello, world!")
-
-      expect(middleware).to have_received(:connect_tcp).with(anything, anything, "example.com", 80).once
     end
 
     it "requests an HTTPS resource successfully (mocked)" do
@@ -78,11 +76,10 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
         ]
       )
 
-      middleware = Object.new
-      middleware.extend(Puro::Middleware)
-      allow(middleware).to receive(:connect_tls).and_return(sock)
+      sock_mock = SockMockMiddleware.new
+      sock_mock.stub_tls("example.com", 443) { sock }
 
-      client = Puro::Client.new(connection_middlewares: [middleware, Puro::BaseMiddleware])
+      client = Puro::Client.new(connection_middlewares: [sock_mock, Puro::BaseMiddleware])
       status, headers, content = client.request(
         :GET,
         "https://example.com"
@@ -90,8 +87,6 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
       expect(status).to be(200)
       expect(headers["content-type"]).to match(%r{^text/html\b})
       expect(content).to eq("Hello, world!")
-
-      expect(middleware).to have_received(:connect_tls).with(anything, anything, "example.com", 443).once
     end
   end
 end
