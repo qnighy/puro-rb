@@ -9,7 +9,7 @@ module Puro
     def ungetbyte: (String | Integer arg0) -> nil
   end
 
-  module ReaderAdapter
+  module IOAdapter
     include _ReaderBase
 
     PARTIAL_LEN: Integer

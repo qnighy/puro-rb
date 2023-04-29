@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "puro/reader_adapter"
+require "puro/io_adapter"
 require_relative "../helpers/double_ext"
 
-RSpec.describe Puro::ReaderAdapter do
+RSpec.describe Puro::IOAdapter do
   describe "#read" do
     describe "text mode" do
       it "forwards to #read_partial" do
         io = instance_double(IO)
-        io.extend Puro::ReaderAdapter
+        io.extend Puro::IOAdapter
         allow(io).to receive(:external_encoding).with(no_args).and_return(Encoding::ASCII_8BIT)
         allow(io).to receive(:internal_encoding).with(no_args).and_return(nil)
         allow(io).to receive(:readpartial).with(instance_of(Integer), instance_of(String)).and_return_or_raise(
@@ -20,7 +20,7 @@ RSpec.describe Puro::ReaderAdapter do
 
       it "applies encoding" do
         io = instance_double(IO)
-        io.extend Puro::ReaderAdapter
+        io.extend Puro::IOAdapter
         allow(io).to receive(:external_encoding).with(no_args).and_return(Encoding::Windows_31J)
         allow(io).to receive(:internal_encoding).with(no_args).and_return(Encoding::UTF_8)
         allow(io).to receive(:readpartial).with(instance_of(Integer),
@@ -34,7 +34,7 @@ RSpec.describe Puro::ReaderAdapter do
     describe "binary mode" do
       it "forwards to #read_partial" do
         io = instance_double(IO)
-        io.extend Puro::ReaderAdapter
+        io.extend Puro::IOAdapter
         allow(io).to receive(:readpartial).with(10, instance_of(String)).and_return("Hello, ".b)
         allow(io).to receive(:readpartial).with(3, instance_of(String)).and_return("wor".b)
         expect(io.read(10)).to eq("Hello, wor")
@@ -58,7 +58,7 @@ RSpec.describe Puro::ReaderAdapter do
   describe "#readline" do
     it "forwards to #read_partial" do
       io = instance_double(IO)
-      io.extend Puro::ReaderAdapter
+      io.extend Puro::IOAdapter
       allow(io).to receive(:external_encoding).with(no_args).and_return(Encoding::ASCII_8BIT)
       allow(io).to receive(:internal_encoding).with(no_args).and_return(nil)
       allow(io).to receive(:readpartial).with(instance_of(Integer)).and_return("HTTP/1".b, ".1 200 OK\r\n".b)
@@ -68,7 +68,7 @@ RSpec.describe Puro::ReaderAdapter do
 
     it "Puts back remainder" do
       io = instance_double(IO)
-      io.extend Puro::ReaderAdapter
+      io.extend Puro::IOAdapter
       allow(io).to receive(:external_encoding).with(no_args).and_return(Encoding::ASCII_8BIT)
       allow(io).to receive(:internal_encoding).with(no_args).and_return(nil)
       allow(io).to receive(:readpartial).with(instance_of(Integer)).and_return("HTTP/1.1 200 OK\r\nConten".b)
@@ -81,7 +81,7 @@ RSpec.describe Puro::ReaderAdapter do
     describe "encoding" do
       it "configures ASCII_8BIT" do
         io = instance_double(IO)
-        io.extend Puro::ReaderAdapter
+        io.extend Puro::IOAdapter
         allow(io).to receive(:external_encoding).with(no_args).and_return(Encoding::ASCII_8BIT)
         allow(io).to receive(:internal_encoding).with(no_args).and_return(nil)
         allow(io).to receive(:readpartial).with(instance_of(Integer)).and_return("あ\n".b)
@@ -90,7 +90,7 @@ RSpec.describe Puro::ReaderAdapter do
 
       it "configures UTF_8" do
         io = instance_double(IO)
-        io.extend Puro::ReaderAdapter
+        io.extend Puro::IOAdapter
         allow(io).to receive(:external_encoding).with(no_args).and_return(Encoding::UTF_8)
         allow(io).to receive(:internal_encoding).with(no_args).and_return(nil)
         allow(io).to receive(:readpartial).with(instance_of(Integer)).and_return("あ\n".b)
@@ -99,7 +99,7 @@ RSpec.describe Puro::ReaderAdapter do
 
       it "applies internal encoding" do
         io = instance_double(IO)
-        io.extend Puro::ReaderAdapter
+        io.extend Puro::IOAdapter
         allow(io).to receive(:external_encoding).with(no_args).and_return(Encoding::Windows_31J)
         allow(io).to receive(:internal_encoding).with(no_args).and_return(Encoding::UTF_8)
         allow(io).to receive(:readpartial).with(instance_of(Integer)).and_return("\x82\xA0\n".b)

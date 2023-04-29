@@ -3,7 +3,7 @@
 require "English"
 
 module Puro
-  module ReaderAdapter
+  module IOAdapter
     # :nodoc:
     PARTIAL_LEN = 4096
 
@@ -22,7 +22,7 @@ module Puro
           return nil if outbuf.empty?
           # continue otherwise
         end
-        ReaderAdapter.decode(self, outbuf)
+        IOAdapter.decode(self, outbuf)
       else
         # Binary mode
         inbuf = nil
@@ -38,7 +38,7 @@ module Puro
     end
 
     def readline(*args, chomp: false)
-      sep, limit = ReaderAdapter.getline_args(args)
+      sep, limit = IOAdapter.getline_args(args)
       raise "TODO: limit arg" if limit >= 0
       raise "TODO: chomp" if chomp
 
@@ -53,7 +53,7 @@ module Puro
       end
       pos = pos0 + sep.bytesize
       ungetbyte(buf[pos..]) if pos < buf.size
-      ReaderAdapter.decode(self, buf[0, pos])
+      IOAdapter.decode(self, buf[0, pos])
     end
 
     # :nodoc:

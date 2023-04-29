@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "puro/reader_adapter"
+require "puro/io_adapter"
 require "puro/http/h1/connection_impl"
 
 module Puro
@@ -32,7 +32,7 @@ module Puro
 
         # :nodoc:
         class BodyReader
-          include ReaderAdapter
+          include IOAdapter
 
           def initialize(impl, id)
             @impl = impl

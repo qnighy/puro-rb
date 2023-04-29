@@ -3,7 +3,7 @@
 # Puro is a WebSocket library that abstracts the connection as streams.
 module Puro
   autoload :VERSION, "puro/version"
-  autoload :ReaderAdapter, "puro/reader_adapter"
+  autoload :IOAdapter, "puro/io_adapter"
   autoload :Http, "puro/http"
   autoload :MiddlewareChain, "puro/middleware"
   autoload :Middleware, "puro/middleware"

@@ -18,7 +18,7 @@ module Puro
         def read_headers: -> Hash[String, String]
 
         class BodyReader
-          include ReaderAdapter
+          include IOAdapter
           @impl: ConnectionImpl
           @id: Integer
 
