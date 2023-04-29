@@ -5,35 +5,11 @@ require "socket"
 require_relative "./helpers/stream_mock"
 
 RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
-  def get
-    get_sock(Socket.tcp("example.com", 80))
-  end
-
-  def get_sock(sock)
-    conn = Puro::Http::H1::Connection.new(sock)
-    stream = conn.open_stream
-    stream.write_headers(
-      {
-        ":method" => "GET",
-        ":path" => "/",
-        "host" => "example.com",
-        "user-agent" => "test",
-        "accept" => "text/html"
-      }
-    )
-    stream.flush
-
-    headers = stream.read_headers
-    status = headers.delete(":status").to_i
-
-    content = stream.reader.read
-    sock.close
-
-    [status, headers, content]
-  end
   describe "http" do
     it "requests an HTTP resource successfully (real)" do
-      status, headers, content = get
+      status, headers, content = Puro::Http.request(
+        middlewares: [Puro::BaseMiddleware]
+      )
       expect(status).to be(200)
       expect(headers["content-type"]).to match(%r{^text/html\b})
       expect(content).to include("https://www.iana.org/domains/example")
@@ -55,10 +31,19 @@ RSpec.describe "http" do # rubocop:disable RSpec/DescribeClass
           [:close]
         ]
       )
-      status, headers, content = get_sock(sock)
+
+      middleware = Object.new
+      middleware.extend(Puro::Middleware)
+      allow(middleware).to receive(:connect_tcp).and_return(sock)
+
+      status, headers, content = Puro::Http.request(
+        middlewares: [middleware, Puro::BaseMiddleware]
+      )
       expect(status).to be(200)
       expect(headers["content-type"]).to match(%r{^text/html\b})
-      expect(content).to include("Hello, world!")
+      expect(content).to eq("Hello, world!")
+
+      expect(middleware).to have_received(:connect_tcp).with(anything, anything, "example.com", 80).once
     end
   end
 end

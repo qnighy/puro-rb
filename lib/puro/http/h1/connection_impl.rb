@@ -186,6 +186,10 @@ module Puro
             raise ArgumentError, "Invalid read on state #{@read_state}"
           end
         end
+
+        def close
+          @io.close
+        end
       end
     end
   end

@@ -1,0 +1,26 @@
+module Puro
+  class MiddlewareChain
+    @next: MiddlewareChain
+    @middleware: Middleware
+
+    def initialize: (MiddlewareChain nxt, Middleware middleware) -> void
+
+    def self.build: (Array[Middleware] middlewares) -> MiddlewareChain
+
+    def connect_http: (MiddlewareChain root, String hostname, Integer port, **untyped options) -> Puro::Http::H1::Connection
+    def connect_https: (MiddlewareChain root, String hostname, Integer port, **untyped options) -> Puro::Http::H1::Connection
+    def connect_tcp: (MiddlewareChain root, String hostname, Integer port, **untyped options) -> Socket
+    def connect_tls: (MiddlewareChain root, String hostname, Integer port, **untyped options) -> OpenSSL::SSL::SSLSocket
+  end
+
+  module Middleware
+    def connect_http: (MiddlewareChain root, MiddlewareChain nxt, String hostname, Integer port, **untyped options) -> Puro::Http::H1::Connection
+    def connect_https: (MiddlewareChain root, MiddlewareChain nxt, String hostname, Integer port, **untyped options) -> Puro::Http::H1::Connection
+    def connect_tcp: (MiddlewareChain root, MiddlewareChain nxt, String hostname, Integer port, **untyped options) -> Socket
+    def connect_tls: (MiddlewareChain root, MiddlewareChain nxt, String hostname, Integer port, **untyped options) -> OpenSSL::SSL::SSLSocket
+  end
+
+  module BaseMiddleware
+    extend Middleware
+  end
+end

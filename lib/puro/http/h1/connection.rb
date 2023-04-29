@@ -21,6 +21,10 @@ module Puro
           id = (@last_id += 1)
           Stream.new(@impl, id)
         end
+
+        def close
+          @impl.close
+        end
       end
     end
   end

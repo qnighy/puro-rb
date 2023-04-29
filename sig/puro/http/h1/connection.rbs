@@ -6,6 +6,8 @@ module Puro
         @last_id: Integer
 
         def open_stream: -> Stream
+
+        def close: -> void
       end
     end
   end

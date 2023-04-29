@@ -19,6 +19,8 @@ module Puro
         def read_headers: -> Hash[String, String]
 
         def readpartial_body: (Integer maxlen, String outbuf) -> String
+
+        def close: -> void
       end
     end
   end

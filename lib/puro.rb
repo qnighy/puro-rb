@@ -5,6 +5,9 @@ module Puro
   autoload :VERSION, "puro/version"
   autoload :ReaderAdapter, "puro/reader_adapter"
   autoload :Http, "puro/http"
+  autoload :MiddlewareChain, "puro/middleware"
+  autoload :Middleware, "puro/middleware"
+  autoload :BaseMiddleware, "puro/middleware"
   autoload :WS, "puro/ws"
 
   class Error < StandardError; end
