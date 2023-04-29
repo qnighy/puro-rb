@@ -1,5 +1,8 @@
 module Puro
   module Http
+    HTTP_DEFAULT_PORT: Integer
+    HTTPS_DEFAULT_PORT: Integer
+
     def self.request: (Symbol method, String url, middlewares: Array[Middleware]) -> [Integer, Hash[String, String], String]
   end
 end
