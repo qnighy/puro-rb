@@ -1,0 +1,25 @@
+class SockMockMiddleware
+  include Puro::Middleware
+
+  @resps: Array[Responder]
+
+  def stub_tcp: (String hostname, Integer port) { -> IO } -> void
+
+  def stub_tls: (String hostname, Integer port) { -> IO } -> void
+
+  class Responder
+    attr_reader times_used: Integer
+
+    @proto: :tcp | :tls
+    @hostname: String
+    @port: Integer
+    @times_used: Integer
+    @block: ^ -> IO
+
+    def initialize: (proto: :tcp | :tls, hostname: String, port: Integer) { -> IO } -> void
+
+    def active?: (proto: :tcp | :tls, hostname: String, port: Integer) -> void
+
+    def connect: (proto: :tcp | :tls, hostname: String, port: Integer) -> IO
+  end
+end

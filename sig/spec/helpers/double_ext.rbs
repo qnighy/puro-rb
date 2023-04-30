@@ -1,0 +1,11 @@
+module RSpec
+  module Mocks
+    class MessageExpectation
+      def and_return_or_raise: (untyped first_value, *untyped values) -> void
+    end
+
+    class AndReturnOrRaiseImplementation < RSpec::Mocks::AndReturnImplementation
+      def call: (*untyped _args_to_ignore) ?{ (*untyped, **untyped) -> untyped } -> untyped
+    end
+  end
+end

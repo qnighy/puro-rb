@@ -1,0 +1,49 @@
+module IOMock
+  type action = [:read, String] | [:write, String] | [:close]
+
+  IOMOCK_CTX_KEY: Symbol
+
+  def self.with_iomock: () { -> void } -> void
+
+  REACTIVE_CTX_KEY: Symbol
+
+  def self.with_reactive_ctx: () { -> void } -> void
+
+  def self.new: (Array[action] actions) -> SyncPipe
+
+  def self.waker: -> Fiber
+
+  class SyncPipe
+    include Puro::IOAdapter
+
+    @opposite: SyncPipe
+    @write_buf: String?
+    @read_buf: String?
+    @read_end: bool
+    @read_wakers: Fiber
+
+    def self.pair: -> [SyncPipe, SyncPipe]
+
+    def <<: (untyped obj) -> self
+
+    def flush: -> self
+
+    def close_write: -> void
+
+    def internal_written: (String buf) -> void
+
+    def internal_closed: -> void
+
+    def internal_wake_read: -> void
+
+    def expect_read: (String expected) -> void
+
+    def readpartial: (Integer maxlen, String? outbuf) -> String
+
+    def ungetbyte: (Integer | String arg0) -> void
+
+    def close_read: -> void
+
+    def close: -> void
+  end
+end
