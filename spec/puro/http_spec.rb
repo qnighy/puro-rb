@@ -5,6 +5,12 @@ require_relative "../helpers/io_mock"
 require_relative "../helpers/sock_mock_middleware"
 
 RSpec.describe Puro::Http do
+  around do |example|
+    IOMock.with_iomock do
+      example.run
+    end
+  end
+
   it "requests an HTTP resource successfully" do
     sock = IOMock.new(
       [

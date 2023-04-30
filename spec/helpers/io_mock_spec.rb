@@ -3,11 +3,18 @@
 require_relative "./io_mock"
 
 RSpec.describe IOMock do
+  around do |example|
+    IOMock.with_iomock do
+      example.run
+    end
+  end
+
   it "mocks stream" do
     stream = IOMock.new(
       [
         [:read, "ping"],
-        [:write, "pong"]
+        [:write, "pong"],
+        [:close]
       ]
     )
     stream << "ping"

@@ -4,6 +4,12 @@ require "puro/http/h1/line_reader"
 require_relative "../../../helpers/io_mock"
 
 RSpec.describe Puro::Http::H1::LineReader do
+  around do |example|
+    IOMock.with_iomock do
+      example.run
+    end
+  end
+
   it "collects lines before empty line" do
     sock = IOMock.new(
       [
