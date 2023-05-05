@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "puro/io_adapter"
 require_relative "../helpers/double_ext"
 
 RSpec.describe Puro::IOAdapter do

@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "puro/http/h1/connection_impl"
-require "puro/http/h1/stream"
-
 module Puro
   module Http
     module H1

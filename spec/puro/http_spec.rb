@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "puro"
 require_relative "../helpers/io_mock"
 require_relative "../helpers/sock_mock_middleware"
 

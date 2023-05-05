@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "puro/io_adapter"
-
 module IOMock
   IOMOCK_CTX_KEY = :iomock_ctx
 

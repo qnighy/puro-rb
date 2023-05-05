@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "puro"
-
 RSpec.describe "Real HTTP requests" do
   it "requests an HTTP resource successfully" do
     client = Puro::Client.new

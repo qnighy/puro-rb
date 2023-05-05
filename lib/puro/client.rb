@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "puro/middleware"
-require "puro/http"
-
 module Puro
   class Client
     def initialize(

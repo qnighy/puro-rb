@@ -2,8 +2,6 @@
 
 # rubocop:disable Layout/LineLength
 
-require "puro/http/syntax"
-
 RSpec.describe Puro::Http::Syntax do
   describe ".strip_line" do
     def strip_line(...) = Puro::Http::Syntax.strip_line(...)

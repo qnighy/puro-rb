@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "puro/http/syntax"
-
 module Puro
   module Http
     module H1

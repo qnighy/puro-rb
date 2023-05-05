@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "puro/middleware"
-
 class SockMockMiddleware
   include Puro::Middleware
 

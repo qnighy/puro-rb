@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "puro/http/h1/line_reader"
 require_relative "../../../helpers/io_mock"
 
 RSpec.describe Puro::Http::H1::LineReader do
