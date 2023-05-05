@@ -34,8 +34,12 @@ module IOMock
           case action[0]
           when :read
             pipe2.expect_read(action[1])
+          when :read_eof
+            pipe2.expect_read_eof
           when :write
             pipe2 << action[1]
+          when :flush
+            pipe2.flush
           when :close
             pipe2.close
           else
@@ -125,6 +129,23 @@ module IOMock
           next
         else
           raise "Unexpected stream:\n  expected: #{expected.inspect}  received: #{@read_buf.inspect}"
+        end
+      end
+    end
+
+    def expect_read_eof
+      raise "Stream already closed" if @read_buf.nil?
+
+      loop do
+        if @read_buf.empty? && @read_end
+          return
+        elsif @read_buf.empty?
+          # Would block
+          @read_wakers << IOMock.waker
+          Fiber.yield
+          next
+        else
+          raise "Unexpected stream:\n  expected: EOF  received: #{@read_buf.inspect}"
         end
       end
     end
